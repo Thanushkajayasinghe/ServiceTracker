@@ -34,15 +34,15 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/uploads', express.static(path.resolve(uploadPath)));
 
 // Routes
-app.use('/api/auth', require('./src/routes/auth'));
-app.use('/api/vehicles', require('./src/routes/vehicles'));
-app.use('/api/vehicles/:vehicleId/records', require('./src/routes/serviceRecords'));
-app.use('/api/dashboard', require('./src/routes/dashboard'));
-app.use('/api/parts', require('./src/routes/parts'));
-app.use('/api/reminders', require('./src/routes/reminders'));
+app.use(['/api/auth', '/auth'], require('./src/routes/auth'));
+app.use(['/api/vehicles', '/vehicles'], require('./src/routes/vehicles'));
+app.use(['/api/vehicles/:vehicleId/records', '/vehicles/:vehicleId/records'], require('./src/routes/serviceRecords'));
+app.use(['/api/dashboard', '/dashboard'], require('./src/routes/dashboard'));
+app.use(['/api/parts', '/parts'], require('./src/routes/parts'));
+app.use(['/api/reminders', '/reminders'], require('./src/routes/reminders'));
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
