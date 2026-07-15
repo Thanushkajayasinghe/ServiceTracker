@@ -1,15 +1,12 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/server"
+      "source": "/api/(.*)",
+      "destination": "/api/server"
     },
     {
-      "handle": "filesystem"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/fallback"
+      "source": "/(.*)",
+      "destination": "/"
     }
   ],
   "functions": {
@@ -17,11 +14,6 @@
       "memory": 256,
       "maxDuration": 30,
       "includeFiles": "backend/**"
-    },
-    "api/fallback.js": {
-      "memory": 128,
-      "maxDuration": 10,
-      "includeFiles": "frontend/dist/index.html"
     }
   },
   "buildCommand": "cd frontend && npm run build",
