@@ -23,8 +23,13 @@ app.use(cors({
   origin: function (origin, callback) {
     // Allow requests with no origin (curl, Postman, server-to-server)
     if (!origin) return callback(null, true);
-    // Allow any localhost or 127.0.0.1 origin regardless of port
-    if (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:') || origin.startsWith('http://[::1]:')) {
+    // Allow localhost, 127.0.0.1, or Vercel production deployments
+    if (
+      origin.startsWith('http://localhost:') || 
+      origin.startsWith('http://127.0.0.1:') || 
+      origin.startsWith('http://[::1]:') ||
+      origin.endsWith('.vercel.app') // Allow Vercel hosting domains
+    ) {
       return callback(null, true);
     }
     return callback(new Error('Not allowed by CORS'));
