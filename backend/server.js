@@ -46,6 +46,17 @@ app.get(['/api/health', '/health'], (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
+// Diagnostic check
+app.get(['/api/debug-env', '/debug-env'], (req, res) => {
+  res.json({
+    hasDbUrl: !!process.env.DATABASE_URL,
+    hasJwtSecret: !!process.env.JWT_SECRET,
+    hasTelegramToken: !!process.env.TELEGRAM_BOT_TOKEN,
+    nodeEnv: process.env.NODE_ENV || 'not set',
+    envKeysPresent: Object.keys(process.env).filter(k => k.includes('DB') || k.includes('SECRET') || k.includes('TELEGRAM') || k.includes('URL'))
+  });
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found.' });
