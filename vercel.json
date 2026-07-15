@@ -1,4 +1,10 @@
 {
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "destination": "/index.html"
+    }
+  ],
   "functions": {
     "api/server.js": {
       "memory": 256,
