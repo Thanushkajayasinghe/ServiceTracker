@@ -57,6 +57,18 @@ app.get(['/api/debug-env', '/debug-env'], (req, res) => {
   });
 });
 
+// Cron endpoint for Vercel Cron Jobs (daily Telegram notifications trigger)
+app.get(['/api/cron/check-alerts', '/cron/check-alerts'], async (req, res) => {
+  try {
+    const { checkAndSendAlerts } = require('./src/services/alertScheduler');
+    await checkAndSendAlerts();
+    res.json({ success: true, message: 'Cron alert check complete' });
+  } catch (err) {
+    console.error('Cron check error:', err);
+    res.status(500).json({ error: 'Cron execution failed' });
+  }
+});
+
 // 404 handler
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found.' });
@@ -68,12 +80,14 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: err.message || 'Internal server error.' });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 ServiceTrack API running on http://localhost:${PORT}`);
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 ServiceTrack API running on http://localhost:${PORT}`);
 
-  // Start Telegram service alert scheduler
-  const { startAlertScheduler } = require('./src/services/alertScheduler');
-  startAlertScheduler();
-});
+    // Start local daily cron scheduler
+    const { startAlertScheduler } = require('./src/services/alertScheduler');
+    startAlertScheduler();
+  });
+}
 
 module.exports = app;
