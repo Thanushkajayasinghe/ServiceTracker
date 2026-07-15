@@ -7,12 +7,16 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Ensure upload directories exist
-const uploadPath = process.env.UPLOAD_PATH || 'uploads';
-['vehicle-books', 'service-attachments'].forEach(dir => {
-  const fullPath = path.join(uploadPath, dir);
-  if (!fs.existsSync(fullPath)) fs.mkdirSync(fullPath, { recursive: true });
-});
+// Ensure upload directories exist (uses /tmp on Vercel which is writable)
+const uploadPath = process.env.VERCEL ? '/tmp/uploads' : (process.env.UPLOAD_PATH || 'uploads');
+try {
+  ['vehicle-books', 'service-attachments'].forEach(dir => {
+    const fullPath = path.join(uploadPath, dir);
+    if (!fs.existsSync(fullPath)) fs.mkdirSync(fullPath, { recursive: true });
+  });
+} catch (err) {
+  console.warn('⚠️  Unable to create upload directories:', err.message);
+}
 
 // Middleware
 app.use(cors({
